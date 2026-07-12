@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenroom — the venue that replies first books the wedding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1EA;
+    --paper-2:#EBE5DA;
+    --ink:#1A1815;
+    --ink-2:#5C554B;
+    --rust:#B34430;
+    --pine:#2F5D4F;
+    --brass:#B08428;
+    --rule:rgba(26,24,21,.14);
+
+    --display:'Newsreader',Georgia,serif;
+    --body:'Inter Tight',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 26px}
+  section{padding:92px 0;border-top:1px solid var(--rule)}
+  section:first-of-type{border-top:0}
+
+  h1,h2{font-family:var(--display);font-weight:500;line-height:1.06;letter-spacing:-.015em}
+  h1{font-size:clamp(2.5rem,6vw,4.6rem)}
+  h2{font-size:clamp(1.9rem,4vw,3rem);margin-bottom:18px}
+  h3{font-family:var(--display);font-weight:600;font-size:1.35rem;line-height:1.25}
+  p{max-width:60ch}
+  em{font-style:italic}
+
+  .eyebrow{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-2);display:flex;align-items:center;gap:10px;margin-bottom:24px
+  }
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--rust)}
+  .lede{font-size:1.2rem;color:var(--ink-2);margin-top:24px}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:60;background:rgba(245,241,234,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+  nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:15px;padding-bottom:15px}
+  .mark{font-family:var(--display);font-weight:600;font-size:1.3rem;display:flex;align-items:center;gap:9px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--pine)}
+  nav .tel{font-family:var(--mono);font-size:.78rem;color:var(--pine);text-decoration:none;border-bottom:1px solid var(--pine);padding-bottom:2px}
+
+  /* HERO */
+  .hero{padding:96px 0 76px}
+  .hero h1 .under{
+    background:linear-gradient(transparent 62%, rgba(179,68,48,.22) 62%);
+  }
+
+  /* THE CLOCK — signature */
+  .clock{
+    margin-top:56px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    gap:34px;border:1px solid var(--rule);background:var(--paper-2);padding:40px 36px
+  }
+  .clock .cell{text-align:center}
+  .clock .cap{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-bottom:12px}
+  .clock .big{font-family:var(--display);font-size:clamp(2.4rem,5.6vw,4rem);font-weight:600;line-height:1}
+  .clock .before .big{color:var(--rust);text-decoration:line-through;text-decoration-thickness:2px}
+  .clock .after .big{color:var(--pine)}
+  .clock .sub{font-family:var(--mono);font-size:.72rem;color:var(--ink-2);margin-top:10px}
+  .arrow{font-family:var(--mono);color:var(--ink-2);font-size:1.3rem}
+
+  /* CHECK YOUR NUMBER */
+  .check{margin-top:44px;max-width:640px}
+  .check .lc-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin-bottom:11px}
+  .lc-form{display:flex;border:1px solid var(--ink);background:var(--paper)}
+  .lc-form:focus-within{border-color:var(--pine);box-shadow:0 0 0 3px rgba(47,93,79,.12)}
+  .lc-form input{flex:1;background:transparent;border:0;color:var(--ink);font-family:var(--mono);font-size:.92rem;padding:18px 18px;min-width:0}
+  .lc-form input::placeholder{color:#A79E90}
+  .lc-form input:focus{outline:none}
+  .lc-form button{background:var(--ink);color:var(--paper);border:0;cursor:pointer;font-family:var(--body);font-weight:600;font-size:.95rem;padding:0 26px;white-space:nowrap}
+  .lc-form button:hover{background:var(--pine)}
+  .lc-note{font-family:var(--mono);font-size:.7rem;color:var(--ink-2);margin-top:11px}
+
+  .console{display:none;margin-top:20px;background:var(--ink);color:var(--paper);padding:24px 22px;font-family:var(--mono);font-size:.8rem;line-height:2}
+  .console.on{display:block}
+  .console .row{opacity:0;display:flex;gap:14px;align-items:baseline}
+  .console .row.in{animation:rise .3s ease forwards}
+  @keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .tick{color:var(--brass);width:12px;flex:none}
+  .key{color:#8F877A;width:140px;flex:none;text-transform:uppercase;font-size:.68rem;letter-spacing:.1em}
+  .console .done{margin-top:18px;padding-top:18px;border-top:1px solid rgba(245,241,234,.18);font-family:var(--display);font-size:1.35rem;color:var(--brass)}
+
+  /* EMAIL CAPTURE (after console finishes) */
+  .capture{display:none;margin-top:16px}
+  .capture.on{display:block}
+  .capture .cap-form{display:flex;border:1px solid var(--paper);background:var(--ink)}
+  .capture .cap-form input{flex:1;background:transparent;border:0;color:var(--paper);font-family:var(--mono);font-size:.9rem;padding:16px 18px;min-width:0}
+  .capture .cap-form input::placeholder{color:#8F877A}
+  .capture .cap-form input:focus{outline:none}
+  .capture .cap-form button{background:var(--brass);color:var(--ink);border:0;cursor:pointer;font-family:var(--body);font-weight:600;font-size:.92rem;padding:0 24px;white-space:nowrap}
+  .capture .cap-form button:hover{background:var(--paper)}
+  .capture .cap-msg{font-family:var(--mono);font-size:.72rem;color:var(--pine);margin-top:12px;display:none}
+  .capture .cap-msg.on{display:block}
+
+  /* THREE */
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:44px}
+  .three > div{background:var(--paper);padding:30px 26px}
+  .three .num{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;color:var(--pine);margin-bottom:14px}
+  .three h3{margin-bottom:10px}
+  .three p{font-size:.95rem;color:var(--ink-2)}
+
+  /* OFFER */
+  .offer{background:var(--paper-2)}
+  .price{font-family:var(--display);font-size:clamp(3rem,7vw,5rem);font-weight:600;line-height:1;color:var(--ink)}
+  .price small{font-family:var(--mono);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);display:block;margin-top:12px;font-weight:400}
+  .ogrid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;margin-top:40px;align-items:start}
+  .ogrid ul{list-style:none}
+  .ogrid ul li{padding:14px 0;border-bottom:1px solid var(--rule);display:flex;gap:14px;font-size:1rem}
+  .ogrid ul li::before{content:"→";color:var(--pine);font-family:var(--mono);flex:none}
+  .btn{display:inline-block;background:var(--ink);color:var(--paper);font-family:var(--body);font-weight:600;font-size:1rem;padding:17px 32px;text-decoration:none;text-align:center;width:100%;margin-top:22px}
+  .btn:hover{background:var(--pine)}
+
+  /* GUARANTEE */
+  .guarantee{background:var(--pine);color:var(--paper);text-align:center;padding:110px 0}
+  .guarantee .q{font-family:var(--display);font-size:clamp(2rem,5vw,3.4rem);font-weight:500;line-height:1.2;max-width:20ch;margin:0 auto}
+  .guarantee .after{font-family:var(--mono);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,241,234,.65);margin-top:34px}
+
+  /* NOT */
+  .not{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:40px;border:1px solid var(--rule)}
+  .not > div{padding:30px 28px}
+  .not > div:first-child{border-right:1px solid var(--rule);background:var(--paper-2)}
+  .not h3{margin-bottom:16px}
+  .not ul{list-style:none;font-size:.96rem;line-height:2.1;color:var(--ink-2)}
+  .not .no li::before{content:"✕  ";color:var(--rust);font-family:var(--mono)}
+  .not .yes li::before{content:"✓  ";color:var(--pine);font-family:var(--mono)}
+
+  /* OPERATOR */
+  .op{display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:start;margin-top:34px}
+  .stamp{width:140px;height:140px;border:1px solid var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);line-height:2;flex:none}
+  .stamp b{font-family:var(--display);font-size:1.9rem;color:var(--pine);letter-spacing:0}
+  blockquote{font-family:var(--display);font-size:1.55rem;font-weight:400;line-height:1.4}
+  .op cite{display:block;margin-top:20px;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);font-style:normal}
+
+  footer{padding:44px 0;border-top:1px solid var(--rule);font-family:var(--mono);font-size:.72rem;color:var(--ink-2)}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+
+  :focus-visible{outline:2px solid var(--pine);outline-offset:3px}
+
+  @media (max-width:860px){
+    section{padding:64px 0}
+    .clock{grid-template-columns:1fr;gap:24px;padding:32px 24px}
+    .arrow{transform:rotate(90deg)}
+    .three,.ogrid,.not,.op{grid-template-columns:1fr}
+    .not > div:first-child{border-right:0;border-bottom:1px solid var(--rule)}
+    .lc-form{flex-direction:column}
+    .lc-form button{padding:16px}
+    .key{width:106px}
+    nav .tel{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .console .row{opacity:1}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="mark"><span class="dot"></span> Greenroom</div>
+    <!-- Demo phone number removed until the Week 3 agent is live (per run sheet). -->
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">For wedding &amp; event venues</div>
+    <h1>Couples email five venues the same afternoon.<br><span class="under">The one that replies first books the wedding.</span></h1>
+    <p class="lede">We sent a real inquiry to 500 venues and timed every reply. What we found is the most expensive thing happening in this business, and almost nobody is looking at it.</p>
+
+    <div class="clock">
+      <div class="cell before">
+        <div class="cap">Median venue reply</div>
+        <div class="big">58 hours</div>
+        <div class="sub">1 in 6 never replied at all</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="cell after">
+        <div class="cap">A venue running Greenroom</div>
+        <div class="big">41 seconds</div>
+        <div class="sub">nights · weekends · during ceremonies</div>
+      </div>
+    </div>
+
+    <div class="check">
+      <div class="lc-label">See your venue's number</div>
+      <div class="lc-form">
+        <label for="url" style="position:absolute;left:-9999px">Your venue's website</label>
+        <input id="url" type="text" placeholder="yourvenue.com" autocomplete="off">
+        <button id="go">Check my venue</button>
+      </div>
+      <div class="lc-note">We'll read your site, build your booking assistant, and show you your reply time from the regional audit. Free. Nothing gets published.</div>
+      <div class="console" id="console" aria-live="polite"></div>
+
+      <!-- EMAIL CAPTURE — revealed after the console finishes -->
+      <div class="capture" id="capture">
+        <form class="cap-form" id="captureForm">
+          <label for="email" style="position:absolute;left:-9999px">Your email address</label>
+          <input id="email" name="email" type="email" placeholder="you@yourvenue.com" autocomplete="email" required>
+          <button type="submit">Send it to me</button>
+        </form>
+        <div class="cap-msg" id="capMsg">On its way. Check your inbox in a minute.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">What it is</div>
+    <h2>One assistant. Three places it shows up.</h2>
+    <p>It doesn't replace you. It makes sure they're still there when you show up.</p>
+
+    <div class="three">
+      <div>
+        <div class="num">01</div>
+        <h3>Your website</h3>
+        <p>Answers questions, checks dates, quotes a range, books the tour. Catches the couple who was about to close the tab.</p>
+      </div>
+      <div>
+        <div class="num">02</div>
+        <h3>Your phone</h3>
+        <p>Picks up when you can't. During a ceremony. On a ladder. At eleven at night. It never sends anyone to voicemail.</p>
+      </div>
+      <div>
+        <div class="num">03</div>
+        <h3>Your inbox</h3>
+        <p>Every inquiry answered in under a minute — including the ones The Knot sends you. Now you'll actually get your money's worth out of them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT ISN'T -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Let's be clear</div>
+    <h2>What this is, and what it isn't</h2>
+    <div class="not">
+      <div>
+        <h3>What it isn't</h3>
+        <ul class="no">
+          <li>A lead service. We will never sell you a lead.</li>
+          <li>A website rebuild. We don't touch your site.</li>
+          <li>A replacement for The Knot. It makes The Knot work.</li>
+          <li>A robot pretending to be a person. Ask it. It'll tell you.</li>
+          <li>A contract. There isn't one.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What it is</h3>
+        <ul class="yes">
+          <li>Every inquiry answered in under a minute, forever</li>
+          <li>Live in five days. You do almost nothing.</li>
+          <li>Every lead captured — even the 2am ones</li>
+          <li>Tours on your calendar while you sleep</li>
+          <li>A report in two weeks showing exactly what changed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section class="offer">
+  <div class="wrap">
+    <div class="eyebrow">The offer</div>
+    <h2>The Response Sprint</h2>
+
+    <div class="ogrid">
+      <ul>
+        <li>An assistant on your website that answers, qualifies, and books tours</li>
+        <li>A phone line that picks up when you can't — nights, weekends, mid-ceremony</li>
+        <li>Your inbox answered in under 60 seconds, every inquiry, including The Knot's</li>
+        <li>A dashboard with every lead, every conversation, every booked tour</li>
+        <li>A before-and-after report at day fourteen</li>
+        <li>Live in five days. No contract. No setup on your end.</li>
+      </ul>
+      <div>
+        <div class="price">$2,500<small>one time · no contract</small></div>
+        <a class="btn" href="https://buy.stripe.com/14AfZh2sighSfhL6H1bbG02">Start the Sprint</a>
+        <p style="font-family:var(--mono);font-size:.7rem;color:var(--ink-2);margin-top:16px;line-height:1.9">A wedding is worth $12,000–15,000. This is a fifth of one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section class="guarantee">
+  <div class="wrap">
+    <div class="q">If your reply time isn't under sixty seconds in two weeks, you don't pay.</div>
+    <div class="after">Not a partial refund. You don't pay.</div>
+  </div>
+</section>
+
+<!-- OPERATOR -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Who built this</div>
+    <div class="op">
+      <div class="stamp"><b>120</b>seats<br>Sheridan, WY</div>
+      <div>
+        <blockquote>Every other company selling to venues is a software company. I'm not. I run a room in Sheridan, Wyoming, and I built this because I got tired of finding a good inquiry sitting in a tab three days after somebody else had already booked them. It works because I needed it to work.</blockquote>
+        <cite>Dalton Goodyear · The Living Room · Sheridan, Wyoming</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Greenroom · Sheridan, Wyoming</div>
+    <div>The 2026 Venue Response Time Report →</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ==== CONFIG ================================================================
+  // Paste your Formspree endpoint here (looks like https://formspree.io/f/xxxxxx).
+  const FORMSPREE_ENDPOINT = "PASTE_FORMSPREE_ENDPOINT_HERE";
+  // ===========================================================================
+
+  const input=document.getElementById('url'),go=document.getElementById('go'),con=document.getElementById('console');
+  const capture=document.getElementById('capture'),captureForm=document.getElementById('captureForm'),
+        emailInput=document.getElementById('email'),capMsg=document.getElementById('capMsg');
+  let lastHost='';
+
+  // Placeholder. In production this hits POST /api/linecheck ->
+  // Fable 5 reads their site, and we join against the audit table for their real reply time.
+  function rows(host){
+    const name=host.replace(/^www\./,'').split('.')[0].replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    return [
+      ['Venue',        name],
+      ['Capacity',     '180 seated · read from your site'],
+      ['Spaces',       'The Barn, The Meadow'],
+      ['Brand',        'colors, type and voice extracted'],
+      ['Pricing',      'packages found and imported'],
+      ['Assistant',    'built · trained on your FAQ'],
+      ['Reply time',   'ready in 41 seconds']
+    ];
+  }
+
+  function run(){
+    const raw=input.value.trim(); if(!raw){input.focus();return;}
+    let host=raw.replace(/^https?:\/\//,'').split('/')[0];
+    if(!host.includes('.')) host+='.com';
+    lastHost=host;
+
+    con.innerHTML=''; con.classList.add('on');
+    capture.classList.remove('on'); capMsg.classList.remove('on');
+    go.disabled=true; go.textContent='Reading…';
+
+    const head=document.createElement('div');
+    head.className='row in';
+    head.innerHTML='<span class="tick" style="color:#8F877A">&gt;</span><span style="color:#8F877A">reading '+host+'</span>';
+    con.appendChild(head);
+
+    const r=rows(host);
+    r.forEach((x,i)=>setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='row in';
+      el.innerHTML='<span class="tick">✓</span><span class="key">'+x[0]+'</span><span>'+x[1]+'</span>';
+      con.appendChild(el);
+    },360*(i+1)));
+
+    setTimeout(()=>{
+      const d=document.createElement('div');
+      d.className='done';
+      d.textContent='Your assistant is ready. Where should we send it?';
+      con.appendChild(d);
+      capture.classList.add('on');           // reveal the email capture
+      emailInput.focus();
+      go.disabled=false; go.textContent='Check my venue';
+    },360*(r.length+1)+280);
+  }
+
+  // Email capture -> Formspree
+  captureForm.addEventListener('submit',function(e){
+    e.preventDefault();
+    const email=emailInput.value.trim();
+    if(!email) return;
+    const btn=captureForm.querySelector('button');
+    btn.disabled=true; btn.textContent='Sending…';
+
+    fetch(FORMSPREE_ENDPOINT,{
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:(function(){const f=new FormData();f.append('email',email);f.append('venue_site',lastHost);return f;})()
+    }).then(function(res){
+      if(res.ok){
+        captureForm.style.display='none';
+        capMsg.classList.add('on');
+      }else{
+        btn.disabled=false; btn.textContent='Send it to me';
+        capMsg.textContent='Something went wrong — try again.'; capMsg.style.color='var(--rust)'; capMsg.classList.add('on');
+      }
+    }).catch(function(){
+      btn.disabled=false; btn.textContent='Send it to me';
+      capMsg.textContent='Something went wrong — try again.'; capMsg.style.color='var(--rust)'; capMsg.classList.add('on');
+    });
+  });
+
+  go.addEventListener('click',run);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+})();
+</script>
+</body>
+</html>
