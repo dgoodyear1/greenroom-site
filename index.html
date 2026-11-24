@@ -33,7 +33,9 @@
   section{padding:92px 0;border-top:1px solid var(--rule)}
   section:first-of-type{border-top:0}
 
-  h1,h2{font-family:var(--display);font-weight:500;line-height:1.06;letter-spacing:-.015em}
+  h1,h2{font-family:var(--display);font-weight:500;line-height:1.06;letter-spacing:-.015em;text-wrap:balance}
+  /* Visually hidden, clipped in place (not parked off screen). */
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
   h1{font-size:clamp(2.5rem,6vw,4.6rem)}
   h2{font-size:clamp(1.9rem,4vw,3rem);margin-bottom:18px}
   h3{font-family:var(--display);font-weight:600;font-size:1.35rem;line-height:1.25}
@@ -200,17 +202,17 @@
     <div class="check">
       <div class="lc-label">See your venue's number</div>
       <div class="lc-form">
-        <label for="url" style="position:absolute;left:-9999px">Your venue's website</label>
+        <label for="url" class="vh">Your venue's website</label>
         <input id="url" type="text" placeholder="yourvenue.com" autocomplete="off">
         <button id="go">Check my venue</button>
       </div>
-      <div class="lc-note">We'll read your site, build your booking assistant, and show you your reply time from the regional audit. Free. Nothing gets published.</div>
+      <div class="lc-note">Sample preview, not a live scan of your site. We'll read your site, build your booking assistant, and show you your reply time from the regional audit. Free. Nothing gets published.</div>
       <div class="console" id="console" aria-live="polite"></div>
 
       <!-- EMAIL CAPTURE — revealed after the console finishes -->
       <div class="capture" id="capture">
         <form class="cap-form" id="captureForm">
-          <label for="email" style="position:absolute;left:-9999px">Your email address</label>
+          <label for="email" class="vh">Your email address</label>
           <input id="email" name="email" type="email" placeholder="you@yourvenue.com" autocomplete="email" required>
           <button type="submit">Send it to me</button>
         </form>
@@ -295,7 +297,7 @@
       <div>
         <div class="price">$2,500<small>one time · no contract</small></div>
         <a class="btn" href="https://buy.stripe.com/14AfZh2sighSfhL6H1bbG02">Start the Sprint</a>
-        <p style="font-family:var(--mono);font-size:.7rem;color:var(--ink-2);margin-top:16px;line-height:1.9">A wedding is worth $12,000–15,000. This is a fifth of one.</p>
+        <p style="font-family:var(--mono);font-size:.75rem;color:var(--ink-2);margin-top:16px;line-height:1.9">A wedding is worth $12,000–15,000. This is a fifth of one.</p>
       </div>
     </div>
   </div>
